@@ -1,6 +1,6 @@
 # Renderelési módok és árnyalók performancia vizsgálata Unity környezetben
 
-Szakdolgozati projekt a Miskolci Egyetem Programtervező-informatikus szakán.
+Szakdolgozati projekt.
 
 ## A kutatás célja és témaleírása
 
