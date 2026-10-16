@@ -21,6 +21,42 @@ A grafikus alkalmazások esetében egy lényeges szempont, hogy a kép részlete
 
 
 
+A teljesítményvizsgálathoz három különböző, specifikus hardveres terhelést generáló színtér kerül kialakításra. A mérések determinisztikusságát egy fix kameraútvonalat bejáró, és az adatokat naplózó C# szkript biztosítja.
+
+1. **Geometria-intenzív színtér Vertex Bound Test**
+   * **Fókusz:** A csúcspont-feldolgozás és a Draw Call-ok kezelése.
+   * **Kialakítás:** Extrém magas poligonszámú modellek sűrű elhelyezése, alapvető textúrákkal és minimális világítással.
+   * **Cél:** A GPU Instancing, a Static Batching és a culling rendszerek hatékonyságának mérése.
+
+2. **Világítás- és Árnyék-intenzív színtér Fragment Bound Test**
+   * **Fókusz:** A Forward és Deferred rendering fénykezelési különbségeinek kimutatása.
+   * **Kialakítás:** Alacsony poligonszámú, egyszerű geometria, viszont nagyszámú dinamikus fényforrás egymást átfedő hatássugarakkal és valós idejű árnyékvetéssel.
+
+3. **Komplex Árnyalók és Overdraw színtér Shader Test**
+   * **Fókusz:** A memóriasávszélesség és a matematikai számításigény mérése.
+   * **Kialakítás:** Szándékosan nehéz, optimalizálatlan pixel shaderek, valamint nagyszámú, egymást átfedő áttetsző (transparent) felület.
+   * **Cél:** Az Overdraw és a mélységpuffer megkerüléséből fakadó teljesítményromlás számszerűsítése.
+
+## Hivatkozások
+
+**1. Renderelési Csővezetékek és Fénykezelés:**
+* Unity Manual: *Understanding the Render Pipelines.* https://docs.unity3d.com/Manual/render-pipelines.html
+* Unity Manual: *Rendering Paths.* https://docs.unity3d.com/Manual/RenderingPaths.html
+* Unity URP Documentation: *Lighting.* https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/lighting.html
+
+**2. Teljesítménymérés és Profilozás:**
+* Unity Manual: *Optimizing Graphics Performance* https://docs.unity3d.com/Manual/OptimizingGraphicsPerformance.html
+* Unity Manual: *Profiler overview* https://docs.unity3d.com/Manual/Profiler.html
+* Unity Manual: *The Frame Debugger* https://docs.unity3d.com/Manual/FrameDebugger.html
+* Unity Profile Analyzer: *Profile Analyzer Package* https://docs.unity3d.com/Packages/com.unity.performance.profile-analyzer@latest/index.html
+
+**3. Geometria, Draw Call-ok és Overdraw:**
+* Unity Manual: *Optimizing Draw Calls* https://docs.unity3d.com/Manual/optimizing-draw-calls.html
+* Unity Manual: *GPU Instancing* https://docs.unity3d.com/Manual/GPUInstancing.html
+
+**4. Árnyalók programozása és optimalizálása:**
+* Unity Manual: *Shader Performance* https://docs.unity3d.com/Manual/SL-ShaderPerformance.html
+
 ## Résztvevők
 
 * **Szerző:** Héring István ZL3ACR
