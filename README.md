@@ -20,7 +20,7 @@ A grafikus alkalmazások esetében egy lényeges szempont, hogy a kép részlete
 ## Futtatási útmutató
 
 
-
+## Teljesítményvizsgálat
 A teljesítményvizsgálathoz három különböző, specifikus hardveres terhelést generáló színtér kerül kialakításra. A mérések determinisztikusságát egy fix kameraútvonalat bejáró, és az adatokat naplózó C# szkript biztosítja.
 
 1. **Geometria-intenzív színtér Vertex Bound Test**
@@ -36,6 +36,19 @@ A teljesítményvizsgálathoz három különböző, specifikus hardveres terhel�
    * **Fókusz:** A memóriasávszélesség és a matematikai számításigény mérése.
    * **Kialakítás:** Szándékosan nehéz, optimalizálatlan pixel shaderek, valamint nagyszámú, egymást átfedő áttetsző (transparent) felület.
    * **Cél:** Az Overdraw és a mélységpuffer megkerüléséből fakadó teljesítményromlás számszerűsítése.
+
+## Renderelési módok áttekintése
+
+A vizsgálat a Unity által kínált három fő renderelési csővezetéket és az azokon belüli megjelenítési útvonalakat hasonlítja össze. Fontos mérnöki szempont, hogy a már elavultnak minősített Built-In Render Pipeline a mérések során referenciapontként szolgál. Ennek segítségével egzakt módon, számszerűsítve kimutatható a modern csővezetékekre való átállás teljesítménybeli nyeresége.
+
+| Renderelési Csővezeték | Támogatott Útvonalak | Fénykezelés jellemzője | Fő optimalizációs cél |
+| :--- | :--- | :--- | :--- |
+| **Built-in Render Pipeline (BRP)** | Forward, Deferred | Forward: Objektumonként szigorúan korlátozott fényszám. Deferred: Képernyőtér alapú. | *Referenciapont.* Régebbi, "legacy" architektúra, hamarosan kivezetésre kerül. |
+| **Universal Render Pipeline (URP)** | Forward, Forward+, Deferred | Forward+: Csempézett fénykezelés, megemelt fénykorlátokkal. | Magas skálázhatóság, fókuszban az SRP Batcher hatékonysága. |
+| **High Definition Render Pipeline (HDRP)**| Forward, Deferred | Fizika-alapú (PBR), Compute Shader vezérelt komplex fénykezelés. | Magas teljesítményű asztali GPU-kra tervezve, vizuális hűség maximalizálása. |
+
+### Megjelenítési Útvonalak a fókuszban:
+A kutatás kiemelt eleme a **Forward** és a **Deferred** rendering összehasonlítása. Míg a Forward rendering esetén a fények számítási költsége geometriafüggő a sok fény drasztikus Draw Call és feldolgozási idő növekedést okoz, addig a Deferred rendering a világítást a G-Buffer felépítése után, a képernyőtérben számolja, így a nagyszámú dinamikus fényforrás kezelése sokkal hatékonyabbá válik memóriasávszélesség terhére.
 
 ## Hivatkozások
 
