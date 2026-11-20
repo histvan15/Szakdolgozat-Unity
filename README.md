@@ -75,3 +75,7 @@ A kutatás kiemelt eleme a **Forward** és a **Deferred** rendering összehasonl
 * **Szerző:** Héring István ZL3ACR
 * **Hivatalos témavezető:** Dr. Túri József
 * **Szakmai konzulens:** Piller Imre
+
+## Felhasznált külső assetek
+
+* **3D modell (`SM_St2`):** *Free Sample - Egypt Statues* – [Unity Asset Store](https://assetstore.unity.com/packages/3d/props/free-sample-egypt-statues-egyptian-statues-ancient-egypt-sculptu-399160) (Standard Unity Asset Store EULA)
