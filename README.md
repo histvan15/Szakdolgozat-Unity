@@ -15,10 +15,44 @@ A grafikus alkalmazások esetében egy lényeges szempont, hogy a kép részlete
 
 ## A projekt tervezett felépítése
 
-
+- `Assets/` – Unity jelenetek (`VertexBoundTest.unity`), C# szkriptek (`GridSpawner`, `PerformanceLogger`), URP beállítások és tesztmodellek
+- `Mérések/` – A végleges, ellenőrzött `.csv` teljesítménymérési adatsorok
+- `Packages/` és `ProjectSettings/` – A Unity 6 és URP csomag-, grafikai és projektbeállítások
 
 ## Futtatási útmutató
 
+### 1. Előfeltételek
+- **Unity 6** (Universal Render Pipeline – URP 17)
+- **Git** a repository klónozásához
+
+### 2. Projekt megnyitása
+1. Klónozd a repository-t.
+2. A projekt megnyitása után töltsd be az Assets/VertexBoundTest.unity jelenetet.
+
+### Mérés futtatása
+1. Töltsd be az **`Assets/VertexBoundTest.unity`** jelenetet, majd a `Game` ablak felső sávjában kapcsold be a **Maximize On Play** opciót.
+2. Jelöld ki a Hierarchy-ban a **`Spawner`** objektumot, és állítsd be a kívánt tesztparamétereket:
+   - **`Grid Spawner`**: rács mérete (`Rows`, `Columns`), betöltési csomagméret (`Batch Size = 50`) és `Enable Static Batching`.
+   - **`Performance Logger`**: egyedi fájlnév a `Test Name` mezőben. Az alapértelmezett mérési paraméterek előre be vannak állítva (`Max Target Fps = 240`, `Warmup Duration = 2 s`, `Test Duration = 10 s`, `Emergency Frame Time Limit = 0.5 s`).
+3. Mentsd a jelenetet (`Ctrl + S`), majd indítsd el a **Play** módot.
+4. A szkript a modellek betöltése és a 2 másodperces bemelegítés után 10 másodpercig naplózza a teljesítményadatokat (`RenderCPU_ms`, `CPU_FrameTime_ms`, `FPS`, `DrawCalls`, `Batches`, `SetPassCalls`, `Triangles`), majd automatikusan kilép Play módból és elmenti a `.csv` fájlt a projekt gyökérmappájába.
+
+### Tesztkonfigurációk reprodukálása
+
+A mérések tisztasága érdekében az URP-beállításokban ki vannak kapcsolva a `Cast Shadows`, a `Post-processing`, az `SSAO`, az `MSAA`, valamint a `Depth` és `Opaque Texture` opciók.
+
+| Blokk | Tesztnév | Rács | Fő beállítások (`PC_RPAsset`, `MI_ST2_URP`, `Spawner`) |
+| :--- | :--- | :---: | :--- |
+| **A. Batching** | `T1_All_OFF` | 35×35 | GRD: `Disabled`, SRP Batcher: `OFF`, GPU Instancing: `OFF` |
+| **A. Batching** | `T2_GPU_Instancing` | 35×35 | GRD: `Disabled`, SRP Batcher: `OFF`, GPU Instancing: `ON` |
+| **A. Batching** | `T3_SRP_Batcher` | 35×35 | GRD: `Disabled`, SRP Batcher: `ON`, GPU Instancing: `OFF` |
+| **A. Batching** | `T4_GPU_Resident_Drawer` | 35×35 | GRD: `Instanced Drawing`, SRP Batcher: `ON`, GPU Instancing: `OFF` |
+| **B. Static Batching** | `SB1_All_OFF_15x15` | 15×15 | Minden optimalizáció `OFF` |
+| **B. Static Batching** | `SB2_StaticBatching_15x15` | 15×15 | `Grid Spawner` → `Enable Static Batching = ON` |
+| **B. Static Batching** | `SB3_GPUInstancing_15x15` | 15×15 | `MI_ST2_URP` → `Enable GPU Instancing = ON` |
+| **C. Culling** | `C1_Frustum_Partial` | 35×35 | Minden `OFF`, `Main Camera` Y forgatás: `180° → 130°` |
+| **C. Culling** | `C2_Occlusion_OFF` | 35×35 | GRD: `Instanced Drawing`, SRP Batcher: `ON`, `OccluderWall` aktív, GPU Occlusion: `OFF` |
+| **C. Culling** | `C3_Occlusion_ON` | 35×35 | GRD: `Instanced Drawing`, SRP Batcher: `ON`, `OccluderWall` aktív, GPU Occlusion: `ON` |
 
 ## Teljesítményvizsgálat
 A teljesítményvizsgálathoz három különböző, specifikus hardveres terhelést generáló színtér kerül kialakításra. A mérések determinisztikusságát egy fix kameraútvonalat bejáró, és az adatokat naplózó C# szkript biztosítja.
